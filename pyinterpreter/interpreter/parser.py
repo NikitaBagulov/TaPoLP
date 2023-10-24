@@ -1,6 +1,6 @@
 from .token import Token, TokenType
 from .lexer import Lexer
-from .ast import BinOp, Number
+from .ast import BinOp, Number, UnOp
 
 class Parser:
     def __init__(self):
@@ -8,8 +8,9 @@ class Parser:
         self._lexer = Lexer()
     
     def check_token(self, type_: TokenType):
-        if self._current_token.type_ == type_:
-            self._current_token = self._lexer.next()
+        if self._current_token:
+            if self and self._current_token.type_ == type_:
+                self._current_token = self._lexer.next()
         else:
             raise SyntaxError("invalid token order")
 
@@ -24,6 +25,9 @@ class Parser:
                 result = self.expr()
                 self.check_token(TokenType.RPAREN)
                 return result
+            if token.type_ == TokenType.OPERATOR:
+                self.check_token(TokenType.OPERATOR)
+                return UnOp(token,self.factor())  
         raise SyntaxError("Invalid factor")
 
     def term(self):

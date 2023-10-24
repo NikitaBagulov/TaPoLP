@@ -1,0 +1,9 @@
+
+.coverage
+pyinterpreter/tests/__pycache__/test_interpreter.cpython-311-pytest-7.4.0.pyc
+*.pyc
+*.pyc
+pyinterpreter/interpreter/__pycache__/interpreter.cpython-311.pyc
+pyinterpreter/interpreter/__pycache__/ast.cpython-311.pyc
+pyinterpreter/interpreter/__pycache__/__init__.cpython-311.pyc
+*.pyc

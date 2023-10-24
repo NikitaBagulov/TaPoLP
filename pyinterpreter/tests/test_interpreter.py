@@ -1,6 +1,6 @@
 import pytest
 from interpreter import Interpreter
-from interpreter import Number, BinOp
+from interpreter import Number, BinOp, UnOp
 from interpreter import Token, TokenType
 
 
@@ -32,12 +32,24 @@ class TestInterpreter:
 
     def test_token(self, interpreter):
         with pytest.raises(SyntaxError):
-            interpreter.eval("2**2")
-            interpreter.eval("2++2")
+            interpreter.eval("1-=-1")
+    def test_check_token(self, interpreter):
+        with pytest.raises(SyntaxError):
+            interpreter.eval("(2+1")
+
+    def test_binop(self, interpreter):
+        with pytest.raises(ValueError):
+            interpreter.visit_binop(BinOp(Number(Token(TokenType.NUMBER, 2)), Token(TokenType.OPERATOR, "^"), Number(Token(TokenType.NUMBER, 3))))
+
+    def test_unop(self, interpreter):
+        with pytest.raises(ValueError):
+            interpreter.eval("*1")
+        assert interpreter.eval("+++++1")== 1
+        assert interpreter.eval("-1")==-1
 
     def test_factor(self, interpreter):
         with pytest.raises(SyntaxError):
-            interpreter.eval("1+1+")
+            interpreter.eval("1+-")
 
     def test_expr(self, interpreter):
         assert interpreter.eval("2*2/2+2")==4
@@ -45,7 +57,6 @@ class TestInterpreter:
     def test_add_with_letter(self, interpreter):
         with pytest.raises(SyntaxError):
             interpreter.eval("2+a")
-            interpreter.eval("t+2")
 
     def test_wrong_operator(self, interpreter):
         with pytest.raises(SyntaxError):
@@ -69,3 +80,6 @@ class TestAst:
         binop = BinOp(Number(Token(TokenType.NUMBER, 1)), Token(TokenType.OPERATOR, "+"), Number (Token(TokenType.NUMBER, 1)))
         assert binop.__str__() == "BinOp+ (Number (Token(TokenType.NUMBER, 1)), Number (Token(TokenType.NUMBER, 1)))"
 
+    def test_unop_str(self):
+        unop = UnOp(Token(TokenType.OPERATOR, "-"), Number(Token(TokenType.NUMBER, 1)))
+        assert unop.__str__() == "UnOp-Number (Token(TokenType.NUMBER, 1))"

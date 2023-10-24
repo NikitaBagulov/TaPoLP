@@ -18,3 +18,11 @@ class BinOp(Node):
 
     def __str__(self):
         return f"BinOp{self.op.value} ({self.left}, {self.right})"
+
+class UnOp(Node):
+    def __init__(self, op: Token, number: Node):
+        self.op = op
+        self.number = number
+
+    def __str__(self):
+        return f"UnOp{self.op.value}{self.number}"
