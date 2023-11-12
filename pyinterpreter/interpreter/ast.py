@@ -26,3 +26,28 @@ class UnOp(Node):
 
     def __str__(self):
         return f"UnOp{self.op.value}{self.number}"
+    
+class Variable(Node):
+    def __init__(self, name: str):
+        self.name = name
+
+    def __str__(self):
+        return f"Variable({self.name})"
+    
+class Assignment(Node):
+    def __init__(self, variable: Variable, data: Node):
+        self.variable = variable
+        self.data = data
+
+    def __str__(self):
+        return f"Assignment{self.variable}:={self.data}"
+    
+class Semicolon(Node):
+    def __init__(self, left: Node, right: Node):
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return f"Semicolon ({self.left}, {self.right})"
+    
+    
