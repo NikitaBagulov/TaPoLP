@@ -1,59 +1,69 @@
+from .ploc import Ploc
+from .iloc import Iloc
+
 class SpecialHashMap(dict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, values=None):
+        if values is None:
+            values = {}
+        super().__init__(values)
+        self.iloc = Iloc(self)
+        self.ploc = Ploc(self)
 
-    @property
-    def iloc(self):
-        sorted_keys = sorted(sorted(self.keys()), key=lambda k: (',' in k and '(' in k))
-        return [self[key] for key in sorted_keys]
+    # @property
+    # def iloc(self):
+    #     sorted_keys = sorted(sorted(self.keys()), key=lambda k: ("," in k and "(" in k))
+    #     return [self[key] for key in sorted_keys]
 
-    @property
-    def ploc(self):
-        def parse(condition):
-            ops = ['<>', '<=', '>=','<', '>', '=']
-            condition = condition.replace(' ', '')
-            for op in ops:
-                if op in condition:
-                    condition = condition.replace(op, f' {op} ')
-            return condition.split()
+    # @property
+    # def ploc(self):
+    #     pass
 
-        def check(key, conditions):
-            key_parts = [part for part in key.strip('()').split(',')]
+    # def ploc(self):
+    #     condition = self.condition
+    #     if condition is not None:
+    #         filtered = {}
+    #         operators = {'<', '>', '=', '<>', '<=', '>='}
 
-            if len(key_parts) != len(conditions):
-                return False
-            
-            for i, part in enumerate(key_parts):
-                try:
-                    part = int(part)
-                except ValueError:
-                    return False
-                if conditions[i] == '<' and not (part < conditions[i + 1]):
-                    return False
-                elif conditions[i] == '>' and not (part > conditions[i + 1]):
-                    return False
-                elif conditions[i] == '=' and not (part == conditions[i + 1]):
-                    return False
-                elif conditions[i] == '<=' and not (part <= conditions[i + 1]):  # Добавлено сравнение для <=
-                    return False
-                elif conditions[i] == '>=' and not (part >= conditions[i + 1]):  # Добавлено сравнение для >=
-                    return False
-                elif conditions[i] == '<>' and not (part != conditions[i + 1]):
-                    return False
-            return True
+    #         conditions = condition.split(',')
+    #         for key in self.keys():
+    #             key_values = [int(val) for val in key.strip('()').split(',') if val.isdigit()]
+    #             if len(key_values) != len(conditions):
+    #                 continue
 
-        result = {}
-        for key in self.keys():
-            conditions = []
-            for k in key.strip('()').split(','):
-                try:
-                    conditions.append(int(k))
-                except ValueError:
-                    pass
+    #             valid = True
+    #             for i, cond in enumerate(conditions):
+    #                 op = None
+    #                 for operator in operators:
+    #                     if operator in cond:
+    #                         op = operator
+    #                         break
 
-            if conditions:
-                conditions = parse(' '.join(map(str, conditions)))
-                filtered = {k: v for k, v in self.items() if check(k, conditions)}
-                result.update(filtered)
+    #                 if op is None:
+    #                     raise ValueError("Invalid condition")
 
-        return result
+    #                 value = int(cond.strip('><= '))
+    #                 if op == '<' and not (key_values[i] < value):
+    #                     valid = False
+    #                     break
+    #                 elif op == '>' and not (key_values[i] > value):
+    #                     valid = False
+    #                     break
+    #                 elif op == '=' and not (key_values[i] == value):
+    #                     valid = False
+    #                     break
+    #                 elif op == '<>' and not (key_values[i] != value):
+    #                     valid = False
+    #                     break
+    #                 elif op == '<=' and not (key_values[i] <= value):
+    #                     valid = False
+    #                     break
+    #                 elif op == '>=' and not (key_values[i] >= value):
+    #                     valid = False
+    #                     break
+
+    #             if valid:
+    #                 filtered[key] = self[key]
+
+    #         return filtered
+    #     else:
+    #         raise ValueError("Condition argument is missing.")
